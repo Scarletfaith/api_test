@@ -1,0 +1,271 @@
+openapi: 3.0.0
+info:
+  title: 'Laravel Swagger API documentation'
+  contact:
+    email: localhost@localhost
+  license:
+    name: 'Apache 2.0'
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://127.0.0.1/api'
+    description: 'Laravel Swagger API server'
+paths:
+  /tasks:
+    get:
+      tags:
+        - 'TODO project'
+      summary: 'Get all tasks'
+      operationId: tasksAll
+      parameters:
+        -
+          name: page
+          in: query
+          description: 'The page number'
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+        404:
+          description: 'Tasks not found'
+    post:
+      tags:
+        - 'TODO project'
+      summary: 'Create new task'
+      operationId: taskCreate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskStoreRequest'
+      responses:
+        201:
+          description: 'Task created'
+        400:
+          description: 'Bad request'
+        404:
+          description: 'Page not found'
+      security:
+        -
+          api_key: []
+  '/tasks/{id}':
+    get:
+      tags:
+        - 'TODO project'
+      summary: 'Get task by ID'
+      operationId: taskGet
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The ID of task'
+          required: true
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        200:
+          description: OK
+        404:
+          description: 'This task not found'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'TODO project'
+      summary: 'Update task by ID'
+      operationId: taskEdit
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The ID of task'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskStoreRequest'
+      responses:
+        200:
+          description: OK
+        400:
+          description: 'Bad request'
+        404:
+          description: 'Page not found'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'TODO project'
+      summary: 'Delete task by ID'
+      operationId: taskDelete
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'The ID of task'
+          required: true
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        202:
+          description: Deleted
+      security:
+        -
+          api_key: []
+  /tasks/findByFilter:
+    post:
+      tags:
+        - 'TODO project'
+      summary: 'Task filter'
+      operationId: taskFilter
+      parameters:
+        -
+          name: status
+          in: query
+          description: 'The status of task'
+          required: true
+          schema:
+            type: string
+            enum:
+              - todo
+              - done
+        -
+          name: priority_from
+          in: query
+          description: 'Select tasks by priority from'
+          required: false
+          schema:
+            type: string
+            enum:
+              - '1'
+              - '2'
+              - '3'
+              - '4'
+              - '5'
+        -
+          name: priority_to
+          in: query
+          description: 'Select tasks by priority to'
+          required: false
+          schema:
+            type: string
+            enum:
+              - '1'
+              - '2'
+              - '3'
+              - '4'
+              - '5'
+        -
+          name: title
+          in: query
+          description: 'The status of task'
+          required: false
+          schema:
+            type: string
+        -
+          name: sort
+          in: query
+          description: 'Select sort'
+          required: false
+          schema:
+            type: string
+            enum:
+              - created_at
+              - finished_at
+              - priority
+      responses:
+        200:
+          description: OK
+components:
+  schemas:
+    TaskStoreRequest:
+      title: 'Task store request'
+      description: 'Some request create task'
+      properties:
+        status:
+          title: Status
+          description: Status
+          type: string
+          format: string
+          example: todo
+        priority:
+          title: Priority
+          description: Priority
+          type: integer
+          format: int64
+          example: '5'
+        title:
+          title: Title
+          description: Title
+          type: string
+          format: string
+          example: 'example task title'
+        description:
+          title: Description
+          description: Description
+          type: string
+          format: string
+          example: 'example task description'
+        parent_id:
+          title: 'Parent ID'
+          description: 'Parent ID'
+          type: integer
+          format: int64
+          example: '1'
+        user_id:
+          title: 'User ID'
+          description: 'User ID'
+          type: integer
+          format: int64
+          example: '1'
+      type: object
+    TaskUpdateRequest:
+      title: 'Task update request'
+      description: 'Some request create task'
+      properties:
+        status:
+          title: Status
+          description: Status
+          type: string
+          format: string
+          example: todo
+        priority:
+          title: Priority
+          description: Priority
+          type: integer
+          format: int64
+          example: '5'
+        title:
+          title: Title
+          description: Title
+          type: string
+          format: string
+          example: 'example task title'
+        description:
+          title: Description
+          description: Description
+          type: string
+          format: string
+          example: 'example task description'
+      type: object
+  securitySchemes:
+    X-APP-ID:
+      type: apiKey
+      name: X-APP-ID
+      in: header
+tags:
+  -
+    name: 'TODO project'
+    description: 'My test TODO API project'
