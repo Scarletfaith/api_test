@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreRequest;
 use App\Http\Requests\Api\UpdateRequest;
-use App\Models\Task;
 use App\Repositories\Api\TaskRepository;
 use App\Services\Api\TaskService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -43,17 +41,13 @@ class TaskController extends Controller
      * @OA\Response(
      *         response="200",
      *         description="OK"
-     *     ),
-     * @OA\Response(
-     *         response="404",
-     *         description="Tasks not found"
      *     )
      * )
      */
-    public function index(): JsonResponse
+    public function index(): Response
     {
         $tasks = $this->taskRepository->getAll();
-        return response()->json($tasks);
+        return response($tasks, 200);
     }
 
     /**
@@ -62,9 +56,6 @@ class TaskController extends Controller
      *     operationId="taskGet",
      *     tags={"TODO project"},
      *     summary="Get task by ID",
-     *     security={
-     *       {"api_key": {}},
-     *     },
      * @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -80,15 +71,19 @@ class TaskController extends Controller
      *         description="OK"
      *     ),
      * @OA\Response(
-     *         response="404",
+     *         response="400",
      *         description="This task not found"
      *     )
      * )
      */
-    public function show(int $id): JsonResponse
+    public function show(int $id): Response
     {
         $task = $this->taskRepository->find($id);
-        return response()->json($task);
+        if ($task->error) {
+            return response($task, 400);
+        } else {
+            return response($task, 200);
+        }
     }
 
     /**
@@ -152,11 +147,11 @@ class TaskController extends Controller
      *     )
      * )
      */
-    public function findByFilter(Request $request): JsonResponse
+    public function findByFilter(Request $request): Response
     {
         $tasks = $this->taskRepository->filter($request);
 
-        return response()->json($tasks);
+        return response($tasks, 200);
     }
 
     /**
@@ -165,9 +160,6 @@ class TaskController extends Controller
      *     operationId="taskCreate",
      *     tags={"TODO project"},
      *     summary="Create new task",
-     *     security={
-     *       {"api_key": {}},
-     *     },
      * @OA\Response(
      *         response="201",
      *         description="Task created"
@@ -175,10 +167,6 @@ class TaskController extends Controller
      * @OA\Response(
      *         response="400",
      *         description="Bad request"
-     *     ),
-     * @OA\Response(
-     *         response="404",
-     *         description="Page not found"
      *     ),
      * @OA\RequestBody(
      *         required=true,
@@ -190,10 +178,10 @@ class TaskController extends Controller
     {
         $task = $this->taskServices->create($request);
 
-        if ($task->validated == 'true') {
-            return response('', 201);
-        } else {
+        if ($task->error) {
             return response($task, 400);
+        } else {
+            return response($task, 201);
         }
     }
 
@@ -203,9 +191,6 @@ class TaskController extends Controller
      *     operationId="taskEdit",
      *     tags={"TODO project"},
      *     summary="Update task by ID",
-     *     security={
-     *       {"api_key": {}},
-     *     },
      * @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -223,23 +208,20 @@ class TaskController extends Controller
      *         response="400",
      *         description="Bad request"
      *     ),
-     * @OA\Response(
-     *         response="404",
-     *         description="Page not found"
-     *     ),
      * @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/TaskStoreRequest")
+     *         @OA\JsonContent(ref="#/components/schemas/TaskUpdateRequest")
      *     )
      * )
      */
     public function update(UpdateRequest $request, int $id): Application | ResponseFactory | Response
     {
         $task = $this->taskServices->edit($request, $id);
-        if ($task->validated == 'true') {
-            return response('', 200);
-        } else {
+
+        if ($task->error) {
             return response($task, 400);
+        } else {
+            return response($task, 200);
         }
     }
 
@@ -249,9 +231,6 @@ class TaskController extends Controller
      *     operationId="taskDelete",
      *     tags={"TODO project"},
      *     summary="Delete task by ID",
-     *     security={
-     *       {"api_key": {}},
-     *     },
      * @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -266,11 +245,20 @@ class TaskController extends Controller
      *         response="202",
      *         description="Deleted",
      *     ),
+     * @OA\Response(
+     *         response="400",
+     *         description="Bad request"
+     *     ),
      * )
      */
     public function destroy(int $id)
     {
         $task = $this->taskServices->delete($id);
-        return response()->json($task);
+
+        if ($task->error) {
+            return response($task, 400);
+        } else {
+            return response($task, 202);
+        }
     }
 }

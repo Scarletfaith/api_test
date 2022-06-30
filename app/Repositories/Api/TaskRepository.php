@@ -4,20 +4,28 @@ namespace App\Repositories\Api;
 
 use App\Models\Task;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskRepository
 {
-    public function getAll(int $perPage = 2): LengthAwarePaginator
+    public function getAll(int $perPage = 3): LengthAwarePaginator
     {
-        return Task::query()->paginate($perPage);
+        return Task::paginate($perPage);
     }
 
-    public function find(int $id): Builder | array | Collection | Model
+    public function find(int $id)
     {
-        return Task::query()->findOrFail($id);
+        try {
+            $task = Task::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            $task = new Task();
+            $task->error = 'Task not found';
+
+            return $task;
+        }
+
+        return $task;
     }
 
     public function filter(object $request): array | Collection

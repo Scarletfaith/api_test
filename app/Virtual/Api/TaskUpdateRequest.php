@@ -58,4 +58,28 @@ class TaskUpdateRequest
      * @var string
      */
     public $description;
+
+    /**
+     * @OA\Property(
+     *     title="Parent ID",
+     *     description="Parent ID",
+     *     format="int64",
+     *     example="1"
+     * )
+     *
+     * @var int
+     */
+    public $parent_id;
+
+    /**
+     * @OA\Property(
+     *     title="User ID",
+     *     description="User ID",
+     *     format="int64",
+     *     example="1"
+     * )
+     *
+     * @var int
+     */
+    public $user_id;
 }

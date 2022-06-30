@@ -27,4 +27,5 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'prefix' => 'tasks'], f
     Route::post('/findByFilter', 'TaskController@findByFilter');
     Route::post('/', 'TaskController@store');
     Route::put('/{id}', 'TaskController@update');
+    Route::delete('/{id}', 'TaskController@destroy');
 });

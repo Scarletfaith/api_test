@@ -39,9 +39,6 @@
                 "responses": {
                     "200": {
                         "description": "OK"
-                    },
-                    "404": {
-                        "description": "Tasks not found"
                     }
                 }
             },
@@ -67,16 +64,8 @@
                     },
                     "400": {
                         "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "Page not found"
                     }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
+                }
             }
         },
         "/tasks/{id}": {
@@ -102,15 +91,10 @@
                     "200": {
                         "description": "OK"
                     },
-                    "404": {
+                    "400": {
                         "description": "This task not found"
                     }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
+                }
             },
             "put": {
                 "tags": [
@@ -134,7 +118,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/TaskStoreRequest"
+                                "$ref": "#/components/schemas/TaskUpdateRequest"
                             }
                         }
                     }
@@ -145,16 +129,8 @@
                     },
                     "400": {
                         "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "Page not found"
                     }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
+                }
             },
             "delete": {
                 "tags": [
@@ -177,13 +153,11 @@
                 "responses": {
                     "202": {
                         "description": "Deleted"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
+                }
             }
         },
         "/tasks/findByFilter": {
@@ -353,16 +327,23 @@
                         "type": "string",
                         "format": "string",
                         "example": "example task description"
+                    },
+                    "parent_id": {
+                        "title": "Parent ID",
+                        "description": "Parent ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "user_id": {
+                        "title": "User ID",
+                        "description": "User ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
                     }
                 },
                 "type": "object"
-            }
-        },
-        "securitySchemes": {
-            "X-APP-ID": {
-                "type": "apiKey",
-                "name": "X-APP-ID",
-                "in": "header"
             }
         }
     },
