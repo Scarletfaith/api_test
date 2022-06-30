@@ -71,7 +71,7 @@ class TaskController extends Controller
      *         description="OK"
      *     ),
      * @OA\Response(
-     *         response="400",
+     *         response="404",
      *         description="This task not found"
      *     )
      * )
@@ -80,7 +80,7 @@ class TaskController extends Controller
     {
         $task = $this->taskRepository->find($id);
         if ($task->error) {
-            return response($task, 400);
+            return response($task, 404);
         } else {
             return response($task, 200);
         }
@@ -165,7 +165,7 @@ class TaskController extends Controller
      *         description="Task created"
      *     ),
      * @OA\Response(
-     *         response="400",
+     *         response="404",
      *         description="Bad request"
      *     ),
      * @OA\RequestBody(
@@ -179,7 +179,7 @@ class TaskController extends Controller
         $task = $this->taskServices->create($request);
 
         if ($task->error) {
-            return response($task, 400);
+            return response($task, 404);
         } else {
             return response($task, 201);
         }
@@ -246,7 +246,7 @@ class TaskController extends Controller
      *         description="Deleted",
      *     ),
      * @OA\Response(
-     *         response="400",
+     *         response="404",
      *         description="Bad request"
      *     ),
      * )
@@ -256,7 +256,7 @@ class TaskController extends Controller
         $task = $this->taskServices->delete($id);
 
         if ($task->error) {
-            return response($task, 400);
+            return response($task, 404);
         } else {
             return response($task, 202);
         }
