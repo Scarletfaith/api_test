@@ -63,7 +63,7 @@ paths:
       responses:
         200:
           description: OK
-        400:
+        404:
           description: 'This task not found'
     put:
       tags:
@@ -85,7 +85,7 @@ paths:
             schema:
               $ref: '#/components/schemas/TaskUpdateRequest'
       responses:
-        200:
+        201:
           description: OK
         400:
           description: 'Bad request'
@@ -106,7 +106,7 @@ paths:
       responses:
         202:
           description: Deleted
-        400:
+        404:
           description: 'Bad request'
   /tasks/findByFilter:
     post:

@@ -165,7 +165,7 @@ class TaskController extends Controller
      *         description="Task created"
      *     ),
      * @OA\Response(
-     *         response="404",
+     *         response="400",
      *         description="Bad request"
      *     ),
      * @OA\RequestBody(
@@ -179,7 +179,7 @@ class TaskController extends Controller
         $task = $this->taskServices->create($request);
 
         if ($task->error) {
-            return response($task, 404);
+            return response($task, 400);
         } else {
             return response($task, 201);
         }
@@ -201,7 +201,7 @@ class TaskController extends Controller
      *         )
      *     ),
      * @OA\Response(
-     *          response="200",
+     *          response="201",
      *          description="OK"
      *     ),
      * @OA\Response(
@@ -221,7 +221,7 @@ class TaskController extends Controller
         if ($task->error) {
             return response($task, 400);
         } else {
-            return response($task, 200);
+            return response($task, 201);
         }
     }
 

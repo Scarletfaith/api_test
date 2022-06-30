@@ -23,13 +23,19 @@ class TaskService
             $checkUser = $this->checkUser($model->getUserId());
 
             if ($checkUser) {
-                $task->status = $model->getStatus();
-                $task->priority = $model->getPriority();
-                $task->title = $model->getTitle();
-                $task->description = $model->getDescription();
-                $task->parent_id = $model->getParentId();
-                $task->user_id = $model->getUserId();
-                $task->save();
+                $checkTask = $this->checkTask($model->getParentId());
+
+                if ($checkTask->status == 'todo') {
+                    $task->status = $model->getStatus();
+                    $task->priority = $model->getPriority();
+                    $task->title = $model->getTitle();
+                    $task->description = $model->getDescription();
+                    $task->parent_id = $model->getParentId();
+                    $task->user_id = $model->getUserId();
+                    $task->save();
+                } else {
+                    $task->error = 'Creation canceled. Parent task finished ' . $checkTask->finished_at;
+                }
             } else {
                 $task->error = 'User not found';
             }

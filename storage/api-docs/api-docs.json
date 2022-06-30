@@ -91,7 +91,7 @@
                     "200": {
                         "description": "OK"
                     },
-                    "400": {
+                    "404": {
                         "description": "This task not found"
                     }
                 }
@@ -124,7 +124,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "OK"
                     },
                     "400": {
@@ -154,7 +154,7 @@
                     "202": {
                         "description": "Deleted"
                     },
-                    "400": {
+                    "404": {
                         "description": "Bad request"
                     }
                 }
