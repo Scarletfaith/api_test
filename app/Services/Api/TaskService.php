@@ -33,7 +33,6 @@ class TaskService
             } else {
                 $task->error = 'User not found';
             }
-
         } else {
             $task->error = $validated;
         }
@@ -49,7 +48,6 @@ class TaskService
             $checkTask = $this->checkTask($id);
 
             if ($checkTask) {
-
                 if ($checkTask->status == 'todo') {
                     $checkUser = $this->checkUser($model->getUserId());
 
@@ -106,7 +104,6 @@ class TaskService
         $checkTask = $this->checkTask($id);
 
         if ($checkTask) {
-
             if ($checkTask->status == 'todo') {
                 $checkSubTasks = sizeof($this->checkSubTaskStatus($id, 'todo'));
 
