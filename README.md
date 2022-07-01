@@ -7,7 +7,7 @@
 
 ```bash
 $ git clone https://github.com/Scarletfaith/api_test.git
-$ cd blog
+$ cd api_test
 $ cp .env.example .env
 ```
 
