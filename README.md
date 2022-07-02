@@ -17,7 +17,7 @@ $ cp .env.example .env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1 [Или полный url, если настраиваете на сервере]
 DB_PORT=3306 [Не меняете, если не используется другой порт]
-DB_DATABASE=laravel [Название БД]
+DB_DATABASE=api [Название БД]
 DB_USERNAME=root [Логин к БД]
 DB_PASSWORD= [Пароль к БД]
 ```
