@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskService
 {
-    public function create(CreateTaskModelInterface $model): Task
+    public function create(CreateTaskModelInterface $model)
     {
         $validated = $this->validated($model->getStatus(), $model->getPriority());
         $task = new Task();
@@ -33,20 +33,20 @@ class TaskService
                     $task->parent_id = $model->getParentId();
                     $task->user_id = $model->getUserId();
                     $task->save();
+
+                    return response()->json($task, '201');
                 } else {
-                    $task->error = 'Creation canceled. Parent task finished ' . $checkTask->finished_at;
+                    return response()->json(['error' => 'Creation canceled. Parent task finished ' . $checkTask->finished_at], '400');
                 }
             } else {
-                $task->error = 'User not found';
+                return response()->json(['error' => 'User not found'], '400');
             }
         } else {
-            $task->error = $validated;
+            return response()->json(['error' => $validated], '400');
         }
-
-        return $task;
     }
 
-    public function edit(EditTaskModelInterface $model, int $id): Task
+    public function edit(EditTaskModelInterface $model, int $id)
     {
         $validated = $this->validated($model->getStatus(), $model->getPriority());
 
@@ -70,6 +70,8 @@ class TaskService
                             $task->finished_at = Carbon::now();
                             $task->updated_at = Carbon::now();
                             $task->save();
+
+                            return response()->json($task, '201');
                         } elseif ($model->getStatus() == 'todo') {
                             $task = Task::find($id);
                             $task->status = $model->getStatus();
@@ -80,33 +82,27 @@ class TaskService
                             $task->user_id = $model->getUserId();
                             $task->updated_at = Carbon::now();
                             $task->save();
+
+                            return response()->json($task, '201');
                         } else {
-                            $task = new Task();
-                            $task->error = $countTodoSubTask . ' unfinished subtasks left';
+                            return response()->json(['error' => $countTodoSubTask . ' unfinished subtasks left'], '400');
                         }
                     } else {
-                        $task = new Task();
-                        $task->error = 'User not found';
+                        return response()->json(['error' => 'User not found'], '400');
                     }
                 } else {
-                    $task = new Task();
-                    $task->error = 'Task completed ' . date_format($checkTask->finished_at, 'H:i:s d.m.Y') . '. Editing is prohibited!';
+                    return response()->json(['error' => 'Task completed ' . date_format($checkTask->finished_at, 'H:i:s d.m.Y') . '. Editing is prohibited!'], '400');
                 }
             } else {
-                $task = new Task();
-                $task->error = 'Task not found';
+                return response()->json(['error' => 'Task not found'], '400');
             }
         } else {
-            $task = new Task();
-            $task->error = $validated;
+            return response()->json(['error' => $validated], '400');
         }
-
-        return $task;
     }
 
     public function delete(int $id)
     {
-        $task = new Task();
         $checkTask = $this->checkTask($id);
 
         if ($checkTask) {
@@ -115,18 +111,17 @@ class TaskService
 
                 if ($checkSubTasks == 0) {
                     Task::find($id)->delete();
-                    $task->success = 'The task was successfully deleted';
+
+                    return response()->json(['success' => 'The task was successfully deleted'], '202');
                 } else {
-                    $task->error = 'You cannot delete a task that has subtasks';
+                    return response()->json(['error' => 'You cannot delete a task that has subtasks'], '404');
                 }
             } else {
-                $task->error = 'You cannot delete a completed task';
+                return response()->json(['error' => 'You cannot delete a completed task'], '404');
             }
         } else {
-            $task->error = 'Task not found';
+            return response()->json(['error' => 'Task not found'], '404');
         }
-
-        return $task;
     }
 
     private function checkSubTaskStatus(int $id, $todoStatus = null): array | Collection

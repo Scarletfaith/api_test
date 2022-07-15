@@ -44,10 +44,11 @@ class TaskController extends Controller
      *     )
      * )
      */
-    public function index(): Response
+    public function index()
     {
         $tasks = $this->taskRepository->getAll();
-        return response($tasks, 200);
+
+        return $tasks;
     }
 
     /**
@@ -76,14 +77,11 @@ class TaskController extends Controller
      *     )
      * )
      */
-    public function show(int $id): Response
+    public function show(int $id)
     {
         $task = $this->taskRepository->find($id);
-        if ($task->error) {
-            return response($task, 404);
-        } else {
-            return response($task, 200);
-        }
+
+        return $task;
     }
 
     /**
@@ -147,11 +145,11 @@ class TaskController extends Controller
      *     )
      * )
      */
-    public function findByFilter(Request $request): Response
+    public function findByFilter(Request $request)
     {
         $tasks = $this->taskRepository->filter($request);
 
-        return response($tasks, 200);
+        return $tasks;
     }
 
     /**
@@ -178,11 +176,7 @@ class TaskController extends Controller
     {
         $task = $this->taskServices->create($request);
 
-        if ($task->error) {
-            return response($task, 400);
-        } else {
-            return response($task, 201);
-        }
+        return $task;
     }
 
     /**
@@ -214,15 +208,11 @@ class TaskController extends Controller
      *     )
      * )
      */
-    public function update(UpdateRequest $request, int $id): Application | ResponseFactory | Response
+    public function update(UpdateRequest $request, int $id)
     {
         $task = $this->taskServices->edit($request, $id);
 
-        if ($task->error) {
-            return response($task, 400);
-        } else {
-            return response($task, 201);
-        }
+        return $task;
     }
 
     /**
@@ -255,10 +245,6 @@ class TaskController extends Controller
     {
         $task = $this->taskServices->delete($id);
 
-        if ($task->error) {
-            return response($task, 404);
-        } else {
-            return response($task, 202);
-        }
+        return $task;
     }
 }

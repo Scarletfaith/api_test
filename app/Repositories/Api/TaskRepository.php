@@ -18,14 +18,14 @@ class TaskRepository
     {
         try {
             $task = Task::findOrFail($id);
+
+            return response()
+                ->json($task, '200');
         } catch (ModelNotFoundException $e) {
-            $task = new Task();
-            $task->error = 'Task not found';
 
-            return $task;
+            return response()
+                ->json(['error' => 'Task not found'], '404');
         }
-
-        return $task;
     }
 
     public function filter(object $request): array | Collection
