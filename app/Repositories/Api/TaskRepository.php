@@ -22,7 +22,6 @@ class TaskRepository
             return response()
                 ->json($task, '200');
         } catch (ModelNotFoundException $e) {
-
             return response()
                 ->json(['error' => 'Task not found'], '404');
         }

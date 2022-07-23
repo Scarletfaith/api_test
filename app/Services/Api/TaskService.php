@@ -34,15 +34,19 @@ class TaskService
                     $task->user_id = $model->getUserId();
                     $task->save();
 
-                    return response()->json($task, '201');
+                    return response()
+                        ->json($task, '201');
                 } else {
-                    return response()->json(['error' => 'Creation canceled. Parent task finished ' . $checkTask->finished_at], '400');
+                    return response()
+                        ->json(['error' => 'Creation canceled. Parent task finished ' . $checkTask->finished_at], '400');
                 }
             } else {
-                return response()->json(['error' => 'User not found'], '400');
+                return response()
+                    ->json(['error' => 'User not found'], '400');
             }
         } else {
-            return response()->json(['error' => $validated], '400');
+            return response()
+                ->json(['error' => $validated], '400');
         }
     }
 
@@ -71,7 +75,8 @@ class TaskService
                             $task->updated_at = Carbon::now();
                             $task->save();
 
-                            return response()->json($task, '201');
+                            return response()
+                                ->json($task, '201');
                         } elseif ($model->getStatus() == 'todo') {
                             $task = Task::find($id);
                             $task->status = $model->getStatus();
@@ -83,21 +88,27 @@ class TaskService
                             $task->updated_at = Carbon::now();
                             $task->save();
 
-                            return response()->json($task, '201');
+                            return response()
+                                ->json($task, '201');
                         } else {
-                            return response()->json(['error' => $countTodoSubTask . ' unfinished subtasks left'], '400');
+                            return response()
+                                ->json(['error' => $countTodoSubTask . ' unfinished subtasks left'], '400');
                         }
                     } else {
-                        return response()->json(['error' => 'User not found'], '400');
+                        return response()
+                            ->json(['error' => 'User not found'], '400');
                     }
                 } else {
-                    return response()->json(['error' => 'Task completed ' . date_format($checkTask->finished_at, 'H:i:s d.m.Y') . '. Editing is prohibited!'], '400');
+                    return response()
+                        ->json(['error' => 'Task completed ' . date_format($checkTask->finished_at, 'H:i:s d.m.Y') . '. Editing is prohibited!'], '400');
                 }
             } else {
-                return response()->json(['error' => 'Task not found'], '400');
+                return response()
+                    ->json(['error' => 'Task not found'], '400');
             }
         } else {
-            return response()->json(['error' => $validated], '400');
+            return response()
+                ->json(['error' => $validated], '400');
         }
     }
 
@@ -112,15 +123,19 @@ class TaskService
                 if ($checkSubTasks == 0) {
                     Task::find($id)->delete();
 
-                    return response()->json(['success' => 'The task was successfully deleted'], '202');
+                    return response()
+                        ->json(['success' => 'The task was successfully deleted'], '202');
                 } else {
-                    return response()->json(['error' => 'You cannot delete a task that has subtasks'], '404');
+                    return response()
+                        ->json(['error' => 'You cannot delete a task that has subtasks'], '404');
                 }
             } else {
-                return response()->json(['error' => 'You cannot delete a completed task'], '404');
+                return response()
+                    ->json(['error' => 'You cannot delete a completed task'], '404');
             }
         } else {
-            return response()->json(['error' => 'Task not found'], '404');
+            return response()
+                ->json(['error' => 'Task not found'], '404');
         }
     }
 
