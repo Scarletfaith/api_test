@@ -47,7 +47,11 @@ class TaskController extends Controller
     {
         $tasks = $this->taskRepository->getAll();
 
-        return response()->json($tasks);
+        return response()
+            ->json([
+                'success' => true,
+                'data' => $tasks
+            ]);
     }
 
     /**
@@ -82,14 +86,20 @@ class TaskController extends Controller
             $task = $this->taskRepository->find($id);
         } catch (Exception $e) {
             return response()
-                ->json(['error' => [
-                    'code' => $e->getCode(),
-                    'message' => $e->getMessage()
-                ]], $e->getCode());
+                ->json([
+                    'success' => false,
+                    'error' => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage()
+                    ]
+                ], $e->getCode());
         }
 
         return response()
-            ->json($task);
+            ->json([
+                'success' => true,
+                'data' => $task
+            ]);
     }
 
     /**
@@ -164,14 +174,20 @@ class TaskController extends Controller
             $tasks = $this->taskRepository->filter($request);
         } catch (Exception $e) {
             return response()
-                ->json(['error' => [
-                    'code' => $e->getCode(),
-                    'message' => $e->getMessage()
-                ]], $e->getCode());
+                ->json([
+                    'success' => false,
+                    'error' => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage()
+                    ]
+                ], $e->getCode());
         }
 
         return response()
-            ->json($tasks);
+            ->json([
+                'success' => true,
+                'data' => $tasks
+            ]);
     }
 
     /**
@@ -200,14 +216,20 @@ class TaskController extends Controller
             $task = $this->taskServices->create($request);
         } catch (Exception $e) {
             return response()
-                ->json(['error' => [
-                    'code' => $e->getCode(),
-                    'message' => $e->getMessage()
-                ]], $e->getCode());
+                ->json([
+                    'success' => false,
+                    'error' => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage()
+                    ]
+                ], $e->getCode());
         }
 
         return response()
-            ->json($task, 201);
+            ->json([
+                'success' => true,
+                'data' => $task
+            ], 201);
     }
 
     /**
@@ -245,14 +267,20 @@ class TaskController extends Controller
             $task = $this->taskServices->edit($request, $id);
         } catch (Exception $e) {
             return response()
-                ->json(['error' => [
-                    'code' => $e->getCode(),
-                    'message' => $e->getMessage()
-                ]], $e->getCode());
+                ->json([
+                    'success' => false,
+                    'error' => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage()
+                    ]
+                ], $e->getCode());
         }
 
         return response()
-            ->json($task, 201);
+            ->json([
+                'success' => true,
+                'data' => $task
+            ], 201);
     }
 
     /**
@@ -287,13 +315,19 @@ class TaskController extends Controller
             $task = $this->taskServices->delete($id);
         } catch (Exception $e) {
             return response()
-                ->json(['error' => [
-                    'code' => $e->getCode(),
-                    'message' => $e->getMessage()
-                ]], $e->getCode());
+                ->json([
+                    'success' => false,
+                    'error' => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage()
+                    ]
+                ], $e->getCode());
         }
 
         return response()
-            ->json($task, 202);
+            ->json([
+                'success' => true,
+                'data' => $task
+            ], 202);
     }
 }
