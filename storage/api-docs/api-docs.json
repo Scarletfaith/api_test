@@ -161,7 +161,7 @@
             }
         },
         "/tasks/findByFilter": {
-            "post": {
+            "get": {
                 "tags": [
                     "TODO project"
                 ],
@@ -344,6 +344,11 @@
                     }
                 },
                 "type": "object"
+            }
+        },
+        "responses": {
+            "404": {
+                "description": "Tasks not found"
             }
         }
     },

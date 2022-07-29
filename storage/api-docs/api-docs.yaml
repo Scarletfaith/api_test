@@ -109,7 +109,7 @@ paths:
         404:
           description: 'Bad request'
   /tasks/findByFilter:
-    post:
+    get:
       tags:
         - 'TODO project'
       summary: 'Task filter'
@@ -256,6 +256,9 @@ components:
           format: int64
           example: '1'
       type: object
+  responses:
+    404:
+      description: 'Tasks not found'
 tags:
   -
     name: 'TODO project'

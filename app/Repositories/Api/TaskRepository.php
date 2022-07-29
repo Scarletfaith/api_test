@@ -3,9 +3,9 @@
 namespace App\Repositories\Api;
 
 use App\Models\Task;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskRepository
 {
@@ -14,20 +14,18 @@ class TaskRepository
         return Task::paginate($perPage);
     }
 
-    public function find(int $id)
+    public function find(int $id): Task
     {
-        try {
-            $task = Task::findOrFail($id);
+        $task = Task::find($id);
 
-            return response()
-                ->json($task, '200');
-        } catch (ModelNotFoundException $e) {
-            return response()
-                ->json(['error' => 'Task not found'], '404');
+        if (!$task) {
+            throw new Exception('Task not found', 404);
         }
+
+        return $task;
     }
 
-    public function filter(object $request): array | Collection
+    public function filter(object $request): Collection
     {
         $status = $request->input('status');
         $priority_from = $request->input('priority_from');
@@ -35,7 +33,7 @@ class TaskRepository
         $title = $request->input('title');
         $sort = $request->input('sort');
 
-        return Task::query()
+        $tasks = Task::query()
             ->when(
                 $status,
                 function ($query, $status) {
@@ -67,5 +65,11 @@ class TaskRepository
                 }
             )
             ->get();
+
+        if ($tasks->isEmpty()) {
+            throw new Exception('Tasks not found', 404);
+        }
+
+        return $tasks;
     }
 }

@@ -7,6 +7,8 @@ use App\Http\Requests\Api\StoreRequest;
 use App\Http\Requests\Api\UpdateRequest;
 use App\Repositories\Api\TaskRepository;
 use App\Services\Api\TaskService;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -41,11 +43,11 @@ class TaskController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $tasks = $this->taskRepository->getAll();
 
-        return $tasks;
+        return response()->json($tasks);
     }
 
     /**
@@ -74,15 +76,24 @@ class TaskController extends Controller
      *     )
      * )
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
-        $task = $this->taskRepository->find($id);
+        try {
+            $task = $this->taskRepository->find($id);
+        } catch (Exception $e) {
+            return response()
+                ->json(['error' => [
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage()
+                ]], $e->getCode());
+        }
 
-        return $task;
+        return response()
+            ->json($task);
     }
 
     /**
-     * @OA\Post(
+     * @OA\Get(
      *     path="/tasks/findByFilter",
      *     operationId="taskFilter",
      *     tags={"TODO project"},
@@ -140,13 +151,27 @@ class TaskController extends Controller
      *         response="200",
      *         description="OK"
      *     )
+     * ),
+     * @OA\Response(
+     *         response="404",
+     *         description="Tasks not found"
+     *     )
      * )
      */
-    public function findByFilter(Request $request)
+    public function findByFilter(Request $request): JsonResponse
     {
-        $tasks = $this->taskRepository->filter($request);
+        try {
+            $tasks = $this->taskRepository->filter($request);
+        } catch (Exception $e) {
+            return response()
+                ->json(['error' => [
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage()
+                ]], $e->getCode());
+        }
 
-        return $tasks;
+        return response()
+            ->json($tasks);
     }
 
     /**
@@ -169,11 +194,20 @@ class TaskController extends Controller
      *     )
      * )
      */
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request): JsonResponse
     {
-        $task = $this->taskServices->create($request);
+        try {
+            $task = $this->taskServices->create($request);
+        } catch (Exception $e) {
+            return response()
+                ->json(['error' => [
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage()
+                ]], $e->getCode());
+        }
 
-        return $task;
+        return response()
+            ->json($task, 201);
     }
 
     /**
@@ -205,11 +239,20 @@ class TaskController extends Controller
      *     )
      * )
      */
-    public function update(UpdateRequest $request, int $id)
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        $task = $this->taskServices->edit($request, $id);
+        try {
+            $task = $this->taskServices->edit($request, $id);
+        } catch (Exception $e) {
+            return response()
+                ->json(['error' => [
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage()
+                ]], $e->getCode());
+        }
 
-        return $task;
+        return response()
+            ->json($task, 201);
     }
 
     /**
@@ -238,10 +281,19 @@ class TaskController extends Controller
      *     ),
      * )
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
-        $task = $this->taskServices->delete($id);
+        try {
+            $task = $this->taskServices->delete($id);
+        } catch (Exception $e) {
+            return response()
+                ->json(['error' => [
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage()
+                ]], $e->getCode());
+        }
 
-        return $task;
+        return response()
+            ->json($task, 202);
     }
 }
